@@ -6,12 +6,12 @@
 The Quality Insights Dashboard provides a clear and interactive view of workforce performance and quality metrics. It helps track employee productivity, monitor quality scores, analyze defects, and evaluate supervisor and auditor performance.
 
 ### Key Highlights 
-Tracks total tasks, samples, defects, fatal errors, and overall quality scores.
-Analyzes monthly quality performance trends.
-Compares quality scores across supervisors.
-Identifies the top 5 employee performers.
-Monitors auditor-wise sampling performance.
-Provides interactive filters for better data analysis.
+- Tracks total tasks, samples, defects, fatal errors, and overall quality scores.
+- Analyzes monthly quality performance trends.
+- Compares quality scores across supervisors.
+- Identifies the top 5 employee performers.
+- Monitors auditor-wise sampling performance.
+- Provides interactive filters for better data analysis.
 
 
 
