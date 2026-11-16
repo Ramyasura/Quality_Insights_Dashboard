@@ -1,0 +1,37 @@
+table Auditors
+	lineageTag: 434cd382-f8b9-441d-af64-11273eddb740
+
+	column 'Auditor ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4b2b0eef-039e-4c49-b7af-2597a23ed9e1
+		summarizeBy: none
+		sourceColumn: Auditor ID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Auditor Name'
+		dataType: string
+		lineageTag: 16968bfc-be7b-4bbb-ae3c-cfdcd2722e9a
+		summarizeBy: none
+		sourceColumn: Auditor Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Auditors = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\c drive\Power BI\First_Project\Quality Analysis Data.xlsx"), null, true),
+				    Auditors_Sheet = Source{[Item="Auditors",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Auditors_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Auditor ID", Int64.Type}, {"Auditor Name", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,97 @@
+table Calendar
+	lineageTag: 8b813497-b55d-492e-b78c-5a43e0afb826
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: 18fdc5ea-5729-447e-af84-93d280e8a9f4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: f7262982-2092-4af3-bec7-f1e2c879fd00
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: 3626148f-2d24-4373-a380-8e1a03da91de
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: 184d8613-7575-49fb-b78d-561e54032709
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month'
+		lineageTag: d54800d9-8644-410f-ba3d-d2352fe9b235
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year Month]
+		sortByColumn: YearMonthSort
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonthSort
+		formatString: 0
+		lineageTag: 4e2ef3ce-cf38-4f58-a4ec-0670ee654844
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [YearMonthSort]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday
+		lineageTag: 219415ac-0d06-41c4-a188-a366b27d94c6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Weekday]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekday Number'
+		formatString: 0
+		lineageTag: 9e2233bc-3c16-4c5f-8872-c8f8c08cc4e6
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Weekday Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				
+				ADDCOLUMNS(
+				    CALENDAR(
+				        MIN('Quality Data'[Date]),
+				        MAX('Quality Data'[Date])
+				    ),
+				    "Year", YEAR([Date]),
+				    "Month", FORMAT([Date], "MMM"),
+				    "Month Number", MONTH([Date]),
+				    "Year Month", FORMAT([Date], "MMM yyyy"),
+				    "YearMonthSort",
+				        YEAR([Date]) * 100 + MONTH([Date]),
+				    "Weekday", FORMAT([Date], "dddd"),
+				    "Weekday Number", WEEKDAY([Date], 2)
+				)
+
+	annotation PBI_Id = 21890ce6f9964ae5b23d6400c9af6b77
+

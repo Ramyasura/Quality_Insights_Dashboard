@@ -1,0 +1,12 @@
+relationship AutoDetected_62c7bb9e-4809-4d0e-8103-d2a78e717c12
+	fromColumn: 'Quality Data'.'Auditor ID'
+	toColumn: Auditors.'Auditor ID'
+
+relationship AutoDetected_37547a5b-16a6-43dc-a79a-a0bc4a547b96
+	fromColumn: 'Quality Data'.'Emp ID'
+	toColumn: 'Emp Master'.'Emp ID'
+
+relationship 861e00a6-816e-43b8-4031-af1af6f32f91
+	fromColumn: 'Quality Data'.Date
+	toColumn: Calendar.Date
+

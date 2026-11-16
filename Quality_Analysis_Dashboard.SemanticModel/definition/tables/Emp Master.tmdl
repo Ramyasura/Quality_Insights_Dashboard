@@ -1,0 +1,81 @@
+table 'Emp Master'
+	lineageTag: 60776c49-164c-496e-a89b-533295afca0c
+
+	measure Employees =
+			
+			DISTINCTCOUNT('Emp Master'[Emp ID])
+		formatString: 0
+		lineageTag: 4bb52cb9-8290-4dde-9ed6-ecc5aae5050e
+
+	measure 'Employee Rank' =
+			
+			VAR CurrentScore = [Quality Score]
+			RETURN
+			IF(
+			    ISBLANK(CurrentScore),
+			    BLANK(),
+			    RANKX(
+			        ALLSELECTED('Emp Master'),
+			        CALCULATE([Quality Score]),
+			        ,
+			        DESC,
+			        DENSE
+			    )
+			)
+		formatString: 0
+		lineageTag: 4676aa99-44ae-40ff-b791-8049f26e71cd
+
+	column 'Emp ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: d1fb670f-27b9-486d-8ea6-6a3c93c11125
+		summarizeBy: none
+		sourceColumn: Emp ID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'EMP Name'
+		dataType: string
+		lineageTag: ed0cc360-37bf-4f8d-b369-4d1abb54d5f2
+		summarizeBy: none
+		sourceColumn: EMP Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Supervisor
+		dataType: string
+		lineageTag: 38373d6b-67c9-4457-930d-ee78a108f1ac
+		summarizeBy: none
+		sourceColumn: Supervisor
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Work Location'
+		dataType: string
+		lineageTag: 8dee50ce-9982-45ff-8ee0-f4ff3a8e658d
+		summarizeBy: none
+		sourceColumn: Work Location
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Emp Master' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\c drive\Power BI\First_Project\Quality Analysis Data.xlsx"), null, true),
+				    #"Emp Master_Sheet" = Source{[Item="Emp Master",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Emp Master_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Emp ID", Int64.Type}, {"EMP Name", type text}, {"Supervisor", type text}, {"Work Location", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

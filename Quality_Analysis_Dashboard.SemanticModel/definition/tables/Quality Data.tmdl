@@ -1,0 +1,112 @@
+table 'Quality Data'
+	lineageTag: af7efe8a-30a1-4410-9a62-255b2fa4f4ac
+
+	measure 'Sampling Percentage' = DIVIDE(SUM('Quality Data'[Samples]),SUM('Quality Data'[Total Tasks]),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0233b4af-8c5e-44e7-b6b9-9694d710f5cd
+
+	measure 'Quality Score' = IF([Defect Percentage]=BLANK(),BLANK(),1-[Defect Percentage])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6d71a688-73af-416a-b765-31eb59ebe0bc
+
+	measure 'Defect Percentage' = DIVIDE(SUM('Quality Data'[Defects]),SUM('Quality Data'[Samples]),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c3ee3d5d-fa51-4007-89ae-a42e433c3001
+
+	measure 'Fatal error percentage' = DIVIDE(SUM('Quality Data'[Fatal Errors]),SUM('Quality Data'[Samples]),BLANK())
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1c100444-3b81-475b-a756-97461394ea76
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6dac86b7-8023-4c44-851e-241ca9a40d32
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Emp ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 3cfa50bc-3bdb-43f5-88b3-d5c90901b660
+		summarizeBy: none
+		sourceColumn: Emp ID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Auditor ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4a25bdf8-e097-47e6-9d14-5fd0fd810c73
+		summarizeBy: none
+		sourceColumn: Auditor ID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Tasks'
+		dataType: int64
+		formatString: 0
+		lineageTag: e7e5c700-8604-4e29-abc8-3770553762e9
+		summarizeBy: sum
+		sourceColumn: Total Tasks
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Samples
+		dataType: int64
+		formatString: 0
+		lineageTag: a4cbff49-f8ce-4fca-8b20-44364e256eb2
+		summarizeBy: sum
+		sourceColumn: Samples
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Defects
+		dataType: int64
+		formatString: 0
+		lineageTag: 8809bcc1-76b5-4d8d-ac02-89ed0d05b200
+		summarizeBy: sum
+		sourceColumn: Defects
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fatal Errors'
+		dataType: int64
+		formatString: 0
+		lineageTag: f7b64f6b-f52c-4c37-bd73-a37850b85b1c
+		summarizeBy: sum
+		sourceColumn: Fatal Errors
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Quality Data' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\c drive\Power BI\First_Project\Quality Analysis Data.xlsx"), null, true),
+				    #"Quality Data_Sheet" = Source{[Item="Quality Data",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Quality Data_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"Emp ID", Int64.Type}, {"Auditor ID", Int64.Type}, {"Total Task", Int64.Type}, {"Samples", Int64.Type}, {"Defects", Int64.Type}, {"Fatal Errors", Int64.Type}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Total Task", "Total Tasks"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
